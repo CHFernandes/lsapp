@@ -48,27 +48,26 @@ class MainController extends Controller
 
     function store(Request $request){
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-        
         try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+                'email' => 'required|email',
+                'password' => 'required'
+            ]);
+                    
             $user = User::create([
                 'name' => $request['name'],
                 'email' => $request['email'],
                 'password' => Hash::make($request['password']),
             ]);
+            
+            auth()->login($user);
+            
+            return redirect()->to('main/successlogin');
         } catch (\Illuminate\Database\QueryException $e) {
             return back()->with('error','Email já cadastrado');
         }
+
         
-        
-        if(Auth::attempt($user)){
-            return redirect('main/successlogin');
-        }else{
-            return back()->with('error','Email já cadastrado');
-        }
     }
 }

@@ -18,7 +18,8 @@
                 <br />
 
                 @if(isset(Auth::user()->email))
-                    <script>window.location="/main/successlogin"</script>
+                    <script>alert("setado");
+                    window.location="{{ url('main/successlogin') }}"</script>
                 @endif
 
                 @if($message = Session::get('error'))
