@@ -54,14 +54,21 @@ class MainController extends Controller
             'password' => 'required'
         ]);
         
-        $user = User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'password' => Hash::make($request['password']),
+        try {
+            $user = User::create([
+                'name' => $request['name'],
+                'email' => $request['email'],
+                'password' => Hash::make($request['password']),
             ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            return back()->with('error','Email já cadastrado');
+        }
         
-        auth()->login($user);
         
-        return redirect()->to('main/successlogin');
+        if(Auth::attempt($user)){
+            return redirect('main/successlogin');
+        }else{
+            return back()->with('error','Email já cadastrado');
+        }
     }
 }
